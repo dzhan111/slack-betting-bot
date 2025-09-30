@@ -438,7 +438,7 @@ class SlackHandlers {
         await client.chat.postEphemeral({
           channel: item.channel,
           user,
-          text: `Confirmed! You bet 1 unit on "${selectedOption}"!`,
+          text: `:tada: Confirmed! You bet 1 unit on "${selectedOption}" for ${line.question}!`,
         });
       } catch (err) {
         logger?.error(err);
@@ -565,7 +565,7 @@ async handleReactionRemoved({ event, client, logger }) {
     await client.chat.postEphemeral({
       channel: item.channel,
       user,
-      text: `🔄 Bet removed! Your bet on "${selectedOption}" has been cancelled. Your balance is now ${newBalance} units.`,
+      text: `🔄 Bet removed! Your bet on "${selectedOption}" for ${line.question} has been cancelled. Your balance is now ${newBalance} units.`,
     });
 
     console.log('✅ Bet successfully removed');
