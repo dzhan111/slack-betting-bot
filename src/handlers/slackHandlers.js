@@ -129,6 +129,26 @@ class SlackHandlers {
       created_at: new Date().toISOString(),
     });
 
+   
+
+    for (let i = 0; i < options.length; i++) {
+      const emoji = emojis[i];
+      if (emoji) {
+        try {
+          // Convert Slack emoji string to reaction name
+          const reactionName = emoji.replace(/:/g, ''); // Remove colons from :emoji:
+          
+          await client.reactions.add({
+            channel: body.channel_id,
+            timestamp: post.ts,
+            name: reactionName
+          });
+        } catch (error) {
+          console.log(`Could not add reaction ${emoji}:`, error.message);
+        }
+      }
+    }
+
     await respond({
       text: `Betting line created! Line ID: ${line.id}`,
       response_type: 'ephemeral',
@@ -438,7 +458,7 @@ class SlackHandlers {
         await client.chat.postEphemeral({
           channel: item.channel,
           user,
-          text: `:tada: Confirmed! You bet 1 unit on "${selectedOption}" for ${line.question}!`,
+          text: `:tada: Confirmed! You bet 1 unit on "${selectedOption}" for "${line.question}"!`,
         });
       } catch (err) {
         logger?.error(err);
@@ -565,7 +585,7 @@ async handleReactionRemoved({ event, client, logger }) {
     await client.chat.postEphemeral({
       channel: item.channel,
       user,
-      text: `🔄 Bet removed! Your bet on "${selectedOption}" for ${line.question} has been cancelled. Your balance is now ${newBalance} units.`,
+      text: `🔄 Bet removed! Your bet on "${selectedOption}" for "${line.question}" has been cancelled. Your balance is now ${newBalance} units.`,
     });
 
     console.log('✅ Bet successfully removed');
